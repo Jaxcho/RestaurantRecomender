@@ -6,20 +6,12 @@ from sqlalchemy.orm import Session
 # from location import nearby_search
 from auth import (authenticate_user, create_access_token, get_current_active_user, fake_users_db, ACCESS_TOKEN_EXPIRE_MINUTES, get_password_hash, decode_token, token_validation)
 from database import DBUser, get_db
-from models import User, UserCreate, UserForm
+from models import User, UserCreate, UserForm, UserInformation
 from pydantic import BaseModel
 
 app = FastAPI(title="Authentication Demo", version="1.0.0")
 
-class UserInformation(BaseModel):
-    lat: float
-    lng: float
-    radius: int
-    time: str
-
-
-
-@app.post("/find_restaurants/")
+@app.post("/find_restaurants")
 async def find_restaurants(user_information: UserInformation, response: Response):
     lat = user_information.lat
     lng = user_information.lng
@@ -27,7 +19,6 @@ async def find_restaurants(user_information: UserInformation, response: Response
     time = user_information.time
     return [lat, lng, radius, time]
     
-
 @app.get("/")
 async def root():
     return {"message": "Welcome to FastAPI Authentication Demo"}

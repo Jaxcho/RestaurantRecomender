@@ -19,5 +19,11 @@ class UserCreate(BaseModel):
 class UserForm(BaseModel):
     username: str
     password: str
+
+class UserInformation(BaseModel):
+    lat: float
+    lng: float
+    radius: int
+    time: str
     
     

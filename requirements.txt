@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+passlib
+python-jose[cryptography]
+psycopg2-binary
+
+# Optional: If you use the Google Maps Places code in API/location.py,
+# install the appropriate Google Maps client library for `google.maps.places_v1`.
+# Suggested optional packages (install only if you use API/location.py):
+googlemaps
+googleapis-common-protos

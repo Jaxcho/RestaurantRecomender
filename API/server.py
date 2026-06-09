@@ -1,23 +1,28 @@
+import asyncio
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException, status, Response, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from sqlalchemy.orm import Session
-# from location import nearby_search
+from location import nearby_search
 from auth import (authenticate_user, create_access_token, get_current_active_user, fake_users_db, ACCESS_TOKEN_EXPIRE_MINUTES, get_password_hash, decode_token, token_validation)
 from database import DBUser, get_db
 from models import User, UserCreate, UserForm, UserInformation
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Authentication Demo", version="1.0.0")
+
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 @app.post("/find_restaurants")
 async def find_restaurants(user_information: UserInformation, response: Response):
     lat = user_information.lat
     lng = user_information.lng
-    radius = user_information.radius
+    radius = user_information.radius*1609.344
     time = user_information.time
-    return [lat, lng, radius, time]
+    
+    return await nearby_search(lat, lng, radius)
     
 @app.get("/")
 async def root():
@@ -116,7 +121,8 @@ def login_user(user: UserForm, response: Response, db: Session = Depends(get_db)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # uvicorn.run("app", host="0.0.0.0", port=8000)
 
 
 
